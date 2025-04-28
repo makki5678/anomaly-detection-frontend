@@ -22,12 +22,25 @@ function App() {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://127.0.0.1:8000/upload/", formData);
+      const res = await axios.post("https://anomaly-detection-backend-1.onrender.com/upload/", formData);
       setData(res.data);
       setMessage("");
     } catch (err) {
       console.error(err);
       setMessage("Error uploading file.");
+    }
+    setLoading(false);
+  };
+
+  const detectAnomalies = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("https://anomaly-detection-backend-1.onrender.com/detect/");
+      setData(response.data);
+      setMessage("");
+    } catch (err) {
+      console.error(err);
+      setMessage("Error fetching detection results.");
     }
     setLoading(false);
   };
@@ -78,7 +91,7 @@ function App() {
               }}
             />
           </div>
-          <div style={{ width: "80%" }}>
+          <div style={{ width: "80%", marginBottom: "10px" }}>
             <button
               onClick={uploadFile}
               disabled={loading}
@@ -94,6 +107,24 @@ function App() {
               }}
             >
               {loading ? "Analysing..." : "Upload & Analyse"}
+            </button>
+          </div>
+          <div style={{ width: "80%" }}>
+            <button
+              onClick={detectAnomalies}
+              disabled={loading}
+              style={{
+                width: "100%",
+                padding: "12px",
+                backgroundColor: "#dc3545",
+                border: "none",
+                borderRadius: "5px",
+                color: "#fff",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              {loading ? "Fetching..." : "Run Analysis"}
             </button>
           </div>
           {message && <p style={{ color: "tomato", marginTop: "10px" }}>{message}</p>}
